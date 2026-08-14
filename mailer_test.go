@@ -48,7 +48,10 @@ func TestNormalizeKeepsExplicitText(t *testing.T) {
 func TestBuildBodyIsMultipartAlternative(t *testing.T) {
 	from := mustParseAddress(t, "Facteur <noreply@facile.studio>")
 	to := mustParseAddress(t, "someone@example.com")
-	body, err := buildBody(Message{To: []string{"someone@example.com"}, Subject: "héllo wörld", HTML: "<p>hi</p>", Text: "hi"}, from, []*mail.Address{to})
+	body, err := buildBody(
+		Message{To: []string{"someone@example.com"}, Subject: "héllo wörld", HTML: "<p>hi</p>", Text: "hi"},
+		from, []*mail.Address{to},
+	)
 	if err != nil {
 		t.Fatalf("buildBody: %v", err)
 	}
@@ -64,9 +67,13 @@ func TestBuildBodyIsMultipartAlternative(t *testing.T) {
 }
 
 func TestFromEnvDefaults(t *testing.T) {
-	env := map[string]string{"SMTP_HOST": "smtp.example.com", "SMTP_USER": "u", "SMTP_PASS": "p", "SMTP_FROM": "a@example.com"}
+	env := map[string]string{
+		"SMTP_HOST": "smtp.example.com", "SMTP_USER": "u",
+		"SMTP_PASS": "p", "SMTP_FROM": "a@example.com",
+	}
 	cfg := FromEnv(func(k string) string { return env[k] })
-	if cfg.Host != "smtp.example.com" || cfg.Port != 587 || cfg.Username != "u" || cfg.Password != "p" || cfg.FromEmail != "a@example.com" {
+	if cfg.Host != "smtp.example.com" || cfg.Port != 587 || cfg.Username != "u" ||
+		cfg.Password != "p" || cfg.FromEmail != "a@example.com" {
 		t.Errorf("unexpected config: %+v", cfg)
 	}
 }

@@ -17,8 +17,11 @@ across both.
 ```
 facteur/
   go.mod           # module github.com/FacileStudio/facteur
-  mailer.go        # Config, FromEnv, Message, Mailer, memory seam
+  mailer.go        # Config, FromEnv, Message, Sender, Mailer, MemoryMailer
+  smtp.go          # smtpSender: dial, TLS/STARTTLS, auth, envelope
+  message.go       # MIME body: normalize, stripHTML, headers, Message-ID
   mailer_test.go
+  .github/workflows/filet.yml   # style gate + antenne alerts
   README.md
   CLAUDE.md
 ```
