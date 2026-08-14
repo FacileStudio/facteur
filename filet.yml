@@ -1,0 +1,5 @@
+# facteur: shared Go mailer for the Facile Suite.
+ignore: [.git, node_modules, vendor, dist, build, target, testdata, .output, _app, coverage]
+extensions: [.go]
+
+failOn: error
