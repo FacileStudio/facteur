@@ -1,0 +1,7 @@
+Welcome to Facile
+
+Hi, {{.Name}}
+
+Thank you for registering. We are excited to have you on board.
+
+If you have any questions, just reply to this email.

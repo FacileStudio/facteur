@@ -88,6 +88,25 @@ _ = m.Send(ctx, mailer.Message{To: []string{"a@example.com"}, Subject: "hi", HTM
 got := m.Messages() // assert on what would have been sent
 ```
 
+### Template rendering
+
+Render embedded templates (exported from `facteur-ts` React components) directly with typed data:
+
+```go
+msg, err := mailer.RenderMessage(
+    []string{"alice@example.com"},
+    "Welcome to Facile",
+    "welcome",
+    struct{ Name string }{Name: "Alice"},
+)
+if err != nil {
+    // handle error
+}
+
+err = m.Send(ctx, msg)
+```
+
+
 ## Development
 
 ```sh
