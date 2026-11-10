@@ -112,3 +112,7 @@ err = m.Send(ctx, msg)
 ```sh
 go vet ./... && go test ./...
 ```
+
+## License
+
+facteur is licensed under the [MIT License](LICENSE).
