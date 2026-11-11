@@ -34,7 +34,7 @@ user's own IMAP/SMTP credentials, which is a product feature, not shared plumbin
 
 | Layer | Tech |
 |---|---|
-| Runtime | Go 1.24, `net/smtp` stdlib — nothing else |
+| Runtime | Go 1.26.11, `net/smtp` stdlib — nothing else |
 
 ## Environment
 

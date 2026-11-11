@@ -9,7 +9,7 @@ across both.
 
 ## Tech Stack
 
-- Go 1.24+, `net/smtp`, zero dependencies. Module `github.com/FacileStudio/facteur`,
+- Go 1.26.11+, `net/smtp`, zero dependencies. Module `github.com/FacileStudio/facteur`,
   package `mailer` (import `mailer "github.com/FacileStudio/facteur"`).
 
 ## Layout
