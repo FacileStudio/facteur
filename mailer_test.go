@@ -94,3 +94,24 @@ func mustParseAddress(t *testing.T, raw string) *mail.Address {
 	}
 	return addr
 }
+
+func TestFromAddressCarriesTheDisplayName(t *testing.T) {
+	from, err := fromAddress(Config{FromEmail: "contact@facile.studio", FromName: "Facile"})
+	if err != nil {
+		t.Fatalf("fromAddress: %v", err)
+	}
+	if got := from.String(); got != `"Facile" <contact@facile.studio>` {
+		t.Errorf("from = %q, want the display name", got)
+	}
+	bare, err := fromAddress(Config{FromEmail: "Facteur <noreply@facile.studio>"})
+	if err != nil || bare.Name != "Facteur" {
+		t.Errorf("a name inside SMTP_FROM was lost: %v %v", bare, err)
+	}
+}
+
+func TestRecipientErrorsNeverRepeatTheAddress(t *testing.T) {
+	_, err := parseRecipients([]string{"not an address person@example"})
+	if err == nil || strings.Contains(err.Error(), "person@example") {
+		t.Errorf("err = %v, want an error without the address", err)
+	}
+}
