@@ -21,9 +21,9 @@ func (s *smtpSender) Send(ctx context.Context, msg Message) error {
 	if cfg.Host == "" {
 		return ErrNotConfigured
 	}
-	from, err := mail.ParseAddress(cfg.FromEmail)
+	from, err := fromAddress(cfg)
 	if err != nil {
-		return fmt.Errorf("mailer: invalid from address %q: %w", cfg.FromEmail, err)
+		return err
 	}
 	msg = normalizeMessage(msg)
 	to, err := parseRecipients(msg.To)
@@ -45,6 +45,22 @@ func (s *smtpSender) Send(ctx context.Context, msg Message) error {
 	return deliver(client, from, to, body)
 }
 
+// fromAddress is the From header and envelope sender: SMTP_FROM, shown under
+// SMTP_FROM_NAME when one is set. A name already inside SMTP_FROM wins over
+// an empty SMTP_FROM_NAME.
+func fromAddress(cfg Config) (*mail.Address, error) {
+	from, err := mail.ParseAddress(cfg.FromEmail)
+	if err != nil {
+		return nil, fmt.Errorf("mailer: invalid from address %q: %w", cfg.FromEmail, err)
+	}
+	if cfg.FromName != "" {
+		from.Name = cfg.FromName
+	}
+	return from, nil
+}
+
+// parseRecipients parses every recipient. Errors never repeat an address, so
+// an app can log them without writing a person's email into its logs.
 func parseRecipients(raw []string) ([]*mail.Address, error) {
 	if len(raw) == 0 {
 		return nil, errors.New("mailer: no recipients")
@@ -53,7 +69,7 @@ func parseRecipients(raw []string) ([]*mail.Address, error) {
 	for _, recipient := range raw {
 		addr, err := mail.ParseAddress(recipient)
 		if err != nil {
-			return nil, fmt.Errorf("mailer: invalid recipient %q: %w", recipient, err)
+			return nil, fmt.Errorf("mailer: invalid recipient: %w", err)
 		}
 		to = append(to, addr)
 	}
@@ -121,7 +137,7 @@ func deliver(client *smtp.Client, from *mail.Address, to []*mail.Address, body [
 	}
 	for _, addr := range to {
 		if err := client.Rcpt(addr.Address); err != nil {
-			return fmt.Errorf("mailer: recipient %s: %w", addr.Address, err)
+			return fmt.Errorf("mailer: recipient refused: %w", err)
 		}
 	}
 	writer, err := client.Data()
